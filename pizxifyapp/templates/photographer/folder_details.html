@@ -1,0 +1,337 @@
+{% extends 'photographer/photographer_dashboard.html' %}
+
+{% block content %}
+
+<div class="folder-details-wrapper">
+    <div class="container-fluid px-4 py-5">
+
+        <!-- ===== MESSAGES ===== -->
+        {% if messages %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} alert-dismissible fade show folder-alert" role="alert">
+                            <i class="bi {% if message.tags == 'error' %}bi-exclamation-triangle-fill{% else %}bi-check-circle-fill{% endif %} me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- ===== FOLDER HEADER ===== -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="folder-header d-flex flex-wrap align-items-center justify-content-between bg-folder-cover p-4 p-lg-5 rounded-4 shadow-lg">
+                    <div>
+                        <span class="folder-eyebrow"><i class="bi bi-folder-fill me-1"></i> {{ folder.folder_id }}</span>
+                        <h1 class="folder-heading mb-2">{{ folder.folder_id }}</h1>
+                        <div class="d-flex flex-wrap gap-4 folder-meta-light mt-2">
+                            <span><i class="bi bi-person me-1"></i> {{ folder.created_by.full_name }}</span>
+                            <span><i class="bi bi-images me-1"></i> {{ photos.count }} photos</span>
+                            <span><i class="bi bi-heart-fill me-1" style="color: var(--coral);"></i> {{ liked_count }} likes</span>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mt-3 mt-sm-0">
+                        <a href="{% url 'upload_folder_photos' folder.id %}" class="btn btn-folder-cta px-4">
+                            <i class="bi bi-cloud-upload me-2"></i>Upload Photos
+                        </a>
+                        <a href="{% url 'create_album' folder.id %}" class="btn btn-folder-cta-secondary px-4">
+                            <i class="bi bi-images me-2"></i>Create Album
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PHOTO GRID ===== -->
+        <div class="row g-4">
+            {% for photo in photos %}
+            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
+                <div class="photo-card h-100">
+                    <div class="photo-image-wrapper">
+                        <img src="{{ photo.image.url }}"
+                             class="photo-image"
+                             alt="Photo"
+                             data-bs-toggle="modal"
+                             data-bs-target="#photoModal{{ photo.id }}">
+                        <div class="photo-overlay">
+                            <button class="btn btn-light btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#photoModal{{ photo.id }}">
+                                <i class="bi bi-eye me-1"></i> Preview
+                            </button>
+                        </div>
+                    </div>
+                    <div class="photo-card-footer">
+                        <a href="{% url 'delete_photo' photo.id %}"
+                           class="btn btn-photo-delete btn-sm"
+                           onclick="return confirm('Delete this photo?')">
+                            <i class="bi bi-trash me-1"></i> Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Photo Preview Modal -->
+            <div class="modal fade" id="photoModal{{ photo.id }}" tabindex="-1">
+                <div class="modal-dialog modal-xl modal-dialog-centered">
+                    <div class="modal-content folder-modal">
+                        <div class="modal-header border-0">
+                            <h5 class="folder-modal-title"><i class="bi bi-image me-2"></i>Photo Preview</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body text-center p-4">
+                            <img src="{{ photo.image.url }}" class="img-fluid rounded-3" alt="Photo preview" style="max-height: 80vh;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% empty %}
+            <!-- empty state -->
+            <div class="col-12">
+                <div class="folder-empty-state text-center">
+                    <div class="mb-4">
+                        <i class="bi bi-image" style="font-size: 3.6rem; color: var(--line);"></i>
+                    </div>
+                    <h4 class="folder-empty-title">No photos uploaded yet</h4>
+                    <p class="folder-meta mb-4">Upload photos to start building albums.</p>
+                    <a href="{% url 'upload_folder_photos' folder.id %}" class="btn btn-folder-cta px-5">
+                        <i class="bi bi-cloud-upload me-2"></i>Upload Photos
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- ===== FOOTER NOTE ===== -->
+        <div class="row mt-5">
+            <div class="col-12 text-center folder-meta">
+                <i class="bi bi-folder2-open me-1"></i> {{ photos.count }} photos in this folder.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ===== STYLES (matching folders theme) ===== -->
+<style>
+    /* --- folder details wrapper --- */
+    .folder-details-wrapper {
+        background: var(--paper, #F1ECE0);
+        min-height: 80vh;
+        background-image: radial-gradient(circle at 1px 1px, rgba(34,34,31,.05) 1px, transparent 0);
+        background-size: 18px 18px;
+    }
+
+    /* header */
+    .bg-folder-cover {
+        background: var(--ink, #22221F);
+        border-radius: 14px;
+    }
+
+    .folder-eyebrow {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: .72rem;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: var(--gold, #C18B2E);
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: .6rem;
+    }
+
+    .folder-heading {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        font-size: clamp(1.9rem, 3vw, 2.5rem);
+        color: var(--paper, #F1ECE0);
+        margin: 0;
+    }
+
+    .folder-meta-light {
+        color: #C8C2B2;
+        font-size: .95rem;
+        font-family: 'Inter', sans-serif;
+    }
+    .folder-meta-light i {
+        color: var(--gold, #C18B2E);
+    }
+
+    .btn-folder-cta {
+        background: var(--coral, #D9512F);
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: .7rem 1.8rem;
+        border: none;
+        transition: background .2s;
+    }
+    .btn-folder-cta:hover { background: #bf4324; color: #fff; }
+
+    .btn-folder-cta-secondary {
+        background: transparent;
+        color: var(--paper, #F1ECE0);
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: .7rem 1.8rem;
+        border: 1.5px solid var(--paper, #F1ECE0);
+        transition: all .2s;
+    }
+    .btn-folder-cta-secondary:hover {
+        background: var(--paper, #F1ECE0);
+        color: var(--ink, #22221F);
+    }
+
+    /* photo cards */
+    .photo-card {
+        background: #ffffff;
+        border: 1px solid var(--line, #D6CCB4);
+        border-radius: 0 12px 12px 12px;
+        box-shadow: 0 8px 24px rgba(34,34,31,.08);
+        overflow: hidden;
+        transition: transform 0.25s ease, box-shadow 0.3s ease;
+    }
+    .photo-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 40px rgba(34,34,31,.12);
+    }
+
+    .photo-image-wrapper {
+        position: relative;
+        overflow: hidden;
+        background: var(--paper-deep, #E7DFCC);
+    }
+
+    .photo-image {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        display: block;
+    }
+    .photo-card:hover .photo-image {
+        transform: scale(1.02);
+    }
+
+    .photo-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(34,34,31,.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.25s ease;
+    }
+    .photo-card:hover .photo-overlay {
+        opacity: 1;
+    }
+    .photo-overlay .btn {
+        background: rgba(255,255,255,.92);
+        color: var(--ink, #22221F);
+        font-weight: 600;
+        border: none;
+        backdrop-filter: blur(4px);
+    }
+    .photo-overlay .btn:hover {
+        background: #fff;
+    }
+
+    .photo-card-footer {
+        padding: 0.8rem 1rem;
+        background: #fff;
+        border-top: 1px solid var(--line, #D6CCB4);
+        text-align: center;
+    }
+
+    .btn-photo-delete {
+        background: transparent;
+        color: var(--coral, #D9512F);
+        border: 1px solid var(--coral, #D9512F);
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: .8rem;
+        padding: .3rem 1.2rem;
+        transition: all .2s;
+    }
+    .btn-photo-delete:hover {
+        background: var(--coral, #D9512F);
+        color: #fff;
+    }
+
+    /* alert styling */
+    .folder-alert {
+        border: 1px solid var(--line, #D6CCB4);
+        border-radius: 12px;
+        background: #fff;
+        color: var(--ink, #22221F);
+        font-family: 'Inter', sans-serif;
+        box-shadow: 0 4px 12px rgba(34,34,31,.06);
+    }
+    .folder-alert.alert-success {
+        border-left: 4px solid var(--moss, #56725A);
+    }
+    .folder-alert.alert-danger {
+        border-left: 4px solid var(--coral, #D9512F);
+    }
+
+    .folder-empty-state {
+        background: #ffffff;
+        border: 1px solid var(--line, #D6CCB4);
+        border-radius: 14px;
+        padding: 3.5rem 2rem;
+        box-shadow: 0 18px 38px -18px rgba(34,34,31,.25);
+    }
+
+    .folder-empty-title {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        color: var(--ink, #22221F);
+    }
+
+    .folder-meta {
+        color: var(--ink-soft, #6B655A);
+        font-size: .85rem;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* modal */
+    .folder-modal {
+        border: 1px solid var(--line, #D6CCB4);
+        border-radius: 14px;
+        background: #fff;
+    }
+
+    .folder-modal-title {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        color: var(--ink, #22221F);
+    }
+
+    /* responsive */
+    @media (max-width: 576px) {
+        .folder-header {
+            text-align: center;
+        }
+        .folder-meta-light {
+            justify-content: center;
+        }
+        .btn-folder-cta,
+        .btn-folder-cta-secondary {
+            width: 100%;
+            text-align: center;
+        }
+        .photo-image {
+            height: 180px;
+        }
+    }
+</style>
+
+{% endblock %}

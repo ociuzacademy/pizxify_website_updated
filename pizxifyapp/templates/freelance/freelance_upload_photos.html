@@ -1,0 +1,452 @@
+{% extends 'photographer/photographer_dashboard.html' %}
+
+{% block content %}
+
+<div class="upload-photos-wrapper">
+    <div class="container-fluid px-4 py-5">
+
+        <!-- ===== HERO / HEADER ===== -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="folder-header d-flex flex-wrap align-items-center justify-content-between bg-folder-cover p-4 p-lg-5 rounded-4 shadow-lg">
+                    <div>
+                        <span class="folder-eyebrow"><i class="bi bi-cloud-upload me-1"></i> Upload</span>
+                        <h1 class="folder-heading mb-2">Upload Photos</h1>
+                        <p class="folder-sub mb-0">
+                            Select multiple photos at once. Preview them before uploading to your folder.
+                        </p>
+                    </div>
+                    <div class="mt-3 mt-sm-0">
+                        <a href="{% url 'freelance_view_folders' %}" class="btn btn-folder-cta-outline px-5">
+                            <i class="bi bi-arrow-left me-2"></i>Back to Folder
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== UPLOAD CARD ===== -->
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-9">
+                <div class="upload-card">
+                    <div class="card-body p-4 p-lg-5">
+
+                        <!-- icon / visual cue -->
+                        <div class="text-center mb-4">
+                            <div class="upload-icon-circle">
+                                <i class="bi bi-cloud-upload"></i>
+                            </div>
+                            <h5 class="upload-title mt-3">Drop your photos here</h5>
+                            <p class="folder-meta">Select one or more images to upload to this folder.</p>
+                        </div>
+
+                        <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                            {% csrf_token %}
+
+                            <!-- file input area - styled as dropzone -->
+                            <div class="upload-dropzone" id="dropzoneArea">
+                                <input type="file"
+                                       name="photos"
+                                       id="photoInput"
+                                       multiple
+                                       class="upload-file-input"
+                                       accept="image/*"
+                                       required>
+                                <div class="upload-dropzone-content">
+                                    <i class="bi bi-image" style="font-size: 2.8rem; color: var(--line);"></i>
+                                    <p class="mb-1 fw-semibold">Click or drag &amp; drop</p>
+                                    <p class="folder-meta small">Supported: JPG, PNG, WebP</p>
+                                    <span class="badge bg-light text-dark rounded-pill px-3 py-2 mt-2" id="fileCount">No files selected</span>
+                                </div>
+                            </div>
+
+                            <!-- Preview Area -->
+                            <div id="previewContainer" class="row g-3 mt-3"></div>
+
+                            <div class="d-flex flex-wrap gap-3 mt-4">
+                                <button type="submit" class="btn btn-folder-cta px-5 py-2" id="uploadBtn" disabled>
+                                    <i class="bi bi-cloud-upload me-2"></i>Upload Photos
+                                </button>
+                                <a href="{% url 'folder_details' folder.id %}" class="btn btn-folder-cta-outline-secondary px-5 py-2">
+                                    Cancel
+                                </a>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== FOOTER NOTE ===== -->
+        <div class="row mt-5">
+            <div class="col-12 text-center folder-meta">
+                <i class="bi bi-folder2-open me-1"></i> Upload and organize your photos beautifully.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ===== STYLES ===== -->
+<style>
+    .upload-photos-wrapper {
+        background: var(--paper, #F1ECE0);
+        min-height: 80vh;
+        background-image: radial-gradient(circle at 1px 1px, rgba(34,34,31,.05) 1px, transparent 0);
+        background-size: 18px 18px;
+    }
+
+    /* header */
+    .bg-folder-cover {
+        background: var(--ink, #22221F);
+        border-radius: 14px;
+    }
+
+    .folder-eyebrow {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: .72rem;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: var(--gold, #C18B2E);
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: .6rem;
+    }
+
+    .folder-heading {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        font-size: clamp(1.9rem, 3vw, 2.5rem);
+        color: var(--paper, #F1ECE0);
+        margin: 0;
+    }
+
+    .folder-sub {
+        color: #C8C2B2;
+        font-size: 1.05rem;
+        max-width: 480px;
+    }
+
+    .btn-folder-cta {
+        background: var(--coral, #D9512F);
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: .7rem 1.8rem;
+        border: none;
+        transition: background .2s;
+    }
+    .btn-folder-cta:hover { background: #bf4324; color: #fff; }
+    .btn-folder-cta:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .btn-folder-cta-outline {
+        background: transparent;
+        color: var(--paper, #F1ECE0);
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: .7rem 1.8rem;
+        border: 1.5px solid var(--paper, #F1ECE0);
+        transition: all .2s;
+    }
+    .btn-folder-cta-outline:hover {
+        background: var(--paper, #F1ECE0);
+        color: var(--ink, #22221F);
+    }
+
+    .btn-folder-cta-outline-secondary {
+        background: transparent;
+        color: var(--ink-soft, #6B655A);
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: .7rem 1.8rem;
+        border: 1.5px solid var(--line, #D6CCB4);
+        transition: all .2s;
+    }
+    .btn-folder-cta-outline-secondary:hover {
+        background: var(--paper-deep, #E7DFCC);
+        color: var(--ink, #22221F);
+    }
+
+    /* upload card */
+    .upload-card {
+        background: #ffffff;
+        border: 1px solid var(--line, #D6CCB4);
+        border-radius: 0 16px 16px 16px;
+        box-shadow: 0 18px 38px -18px rgba(34,34,31,.35);
+    }
+
+    .upload-icon-circle {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: var(--paper-deep, #E7DFCC);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.2rem;
+        color: var(--coral, #D9512F);
+        border: 2px solid var(--line, #D6CCB4);
+    }
+
+    .upload-title {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        color: var(--ink, #22221F);
+        margin-bottom: .2rem;
+    }
+
+    .folder-meta {
+        color: var(--ink-soft, #6B655A);
+        font-size: .85rem;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* dropzone */
+    .upload-dropzone {
+        position: relative;
+        border: 2px dashed var(--line, #D6CCB4);
+        border-radius: 12px;
+        padding: 2.5rem 1.5rem;
+        text-align: center;
+        background: var(--paper, #F1ECE0);
+        transition: border-color .2s, background .2s;
+        min-height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    .upload-dropzone:hover {
+        border-color: var(--moss, #56725A);
+        background: var(--paper-deep, #E7DFCC);
+    }
+    .upload-dropzone.dragover {
+        border-color: var(--coral, #D9512F);
+        background: var(--paper-deep, #E7DFCC);
+    }
+
+    .upload-file-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .upload-dropzone-content {
+        pointer-events: none;
+    }
+
+    /* preview cards */
+    .preview-card {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--line, #D6CCB4);
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(34,34,31,.06);
+        transition: transform .15s;
+    }
+    .preview-card:hover {
+        transform: scale(1.01);
+    }
+
+    .preview-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .preview-card .preview-info {
+        padding: 0.6rem 1rem;
+        background: #fff;
+        border-top: 1px solid var(--line, #D6CCB4);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: .82rem;
+        color: var(--ink-soft, #6B655A);
+    }
+
+    .preview-card .preview-info .file-size {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: .7rem;
+        color: var(--ink-soft, #6B655A);
+    }
+
+    .remove-photo {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(217, 81, 47, .9);
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        z-index: 10;
+        transition: background .15s, transform .15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        padding: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    }
+    .remove-photo:hover {
+        background: var(--coral, #D9512F);
+        transform: scale(1.08);
+    }
+
+    /* responsive */
+    @media (max-width: 576px) {
+        .folder-header {
+            text-align: center;
+        }
+        .btn-folder-cta,
+        .btn-folder-cta-outline,
+        .btn-folder-cta-outline-secondary {
+            width: 100%;
+            text-align: center;
+        }
+        .upload-card .card-body {
+            padding: 1.5rem !important;
+        }
+        .preview-card img {
+            height: 150px;
+        }
+    }
+</style>
+
+<!-- ===== SCRIPT ===== -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const photoInput = document.getElementById('photoInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const fileCount = document.getElementById('fileCount');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const dropzone = document.getElementById('dropzoneArea');
+        let selectedFiles = [];
+
+        // Update file count and button state
+        function updateUI() {
+            const count = selectedFiles.length;
+            if (count > 0) {
+                fileCount.textContent = count + ' file' + (count > 1 ? 's' : '') + ' selected';
+                fileCount.className = 'badge bg-success text-white rounded-pill px-3 py-2 mt-2';
+                uploadBtn.disabled = false;
+            } else {
+                fileCount.textContent = 'No files selected';
+                fileCount.className = 'badge bg-light text-dark rounded-pill px-3 py-2 mt-2';
+                uploadBtn.disabled = true;
+            }
+        }
+
+        // Format file size
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+
+        // Render previews
+        function renderPreview() {
+            previewContainer.innerHTML = '';
+
+            selectedFiles.forEach((file, index) => {
+                const reader = new FileReader();
+
+                const col = document.createElement('div');
+                col.className = 'col-6 col-md-4 col-lg-3';
+
+                reader.onload = function(e) {
+                    col.innerHTML = `
+                        <div class="preview-card">
+                            <button type="button" class="remove-photo" onclick="removePhoto(${index})">×</button>
+                            <img src="${e.target.result}" alt="${file.name}">
+                            <div class="preview-info">
+                                <span class="truncate" style="max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${file.name}</span>
+                                <span class="file-size">${formatSize(file.size)}</span>
+                            </div>
+                        </div>
+                    `;
+                    previewContainer.appendChild(col);
+                };
+
+                reader.readAsDataURL(file);
+            });
+
+            updateUI();
+        }
+
+        // Handle file selection
+        photoInput.addEventListener('change', function() {
+            selectedFiles = Array.from(this.files);
+            renderPreview();
+        });
+
+        // Remove photo function (global)
+        window.removePhoto = function(index) {
+            selectedFiles.splice(index, 1);
+
+            const dt = new DataTransfer();
+            selectedFiles.forEach(file => dt.items.add(file));
+            photoInput.files = dt.files;
+
+            renderPreview();
+        };
+
+        // Drag and drop support
+        dropzone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        });
+
+        dropzone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+        });
+
+        dropzone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const dt = new DataTransfer();
+                // Merge with existing files
+                const existingFiles = Array.from(photoInput.files);
+                const newFiles = Array.from(files);
+                const allFiles = [...existingFiles, ...newFiles];
+
+                // Filter duplicates by name and size (simple check)
+                const uniqueFiles = allFiles.filter((file, index, self) =>
+                    index === self.findIndex(f => f.name === file.name && f.size === file.size)
+                );
+
+                uniqueFiles.forEach(file => dt.items.add(file));
+                photoInput.files = dt.files;
+                selectedFiles = uniqueFiles;
+                renderPreview();
+            }
+        });
+
+        // Initial state
+        updateUI();
+    });
+</script>
+
+{% endblock %}

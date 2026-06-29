@@ -1,0 +1,161 @@
+# ======================================
+# Python
+# ======================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# ======================================
+# Django
+# ======================================
+*.log
+db.sqlite3
+db.sqlite3-journal
+media/
+images/
+staticfiles/
+*.pot
+*.mo
+local_settings.py
+
+# ======================================
+# Environment Variables
+# ======================================
+.env
+.env.*
+!.env.example
+
+# ======================================
+# IDE
+# ======================================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ======================================
+# OS Files
+# ======================================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ======================================
+# Build & Distribution
+# ======================================
+build/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ======================================
+# Testing
+# ======================================
+.coverage
+.coverage.*
+.cache/
+.pytest_cache/
+.tox/
+.nox/
+htmlcov/
+coverage.xml
+nosetests.xml
+
+# ======================================
+# Type Checkers
+# ======================================
+.mypy_cache/
+.dmypy.json
+.pyre/
+.pytype/
+
+# ======================================
+# Jupyter
+# ======================================
+.ipynb_checkpoints/
+
+# ======================================
+# Logs
+# ======================================
+logs/
+*.log
+
+# ======================================
+# Temporary Files
+# ======================================
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+
+# ======================================
+# Images (Optional)
+# Uncomment if images should not be tracked
+# ======================================
+# *.png
+# *.jpg
+# *.jpeg
+# *.gif
+
+# ======================================
+# Uploaded Media (Optional)
+# Uncomment if media files should not be tracked
+# ======================================
+# media/
+
+# ======================================
+# Node.js (if using Tailwind/Vite/Webpack)
+# ======================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+pnpm-lock.yaml
+
+# ======================================
+# Static Build Files
+# ======================================
+static/dist/
+static/build/
+
+# ======================================
+# PyCharm
+# ======================================
+.idea/
+
+# ======================================
+# VS Code
+# ======================================
+.vscode/
+
+# ======================================
+# Mac
+# ======================================
+.AppleDouble
+.LSOverride
+
+# ======================================
+# Windows
+# ======================================
+ehthumbs.db
+Icon?

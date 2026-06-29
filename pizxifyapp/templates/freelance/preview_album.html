@@ -1,0 +1,317 @@
+{% extends 'freelance/freelance_dashboard.html' %}
+
+{% block content %}
+
+<div class="preview-wrapper">
+    <div class="container-fluid px-4 py-5">
+
+        <!-- ===== HEADER ===== -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="preview-header d-flex flex-wrap align-items-center justify-content-between bg-folder-cover p-4 p-lg-5 rounded-4 shadow-lg">
+                    <div>
+                        <span class="folder-eyebrow"><i class="bi bi-eye me-1"></i> Preview mode</span>
+                        <h1 class="folder-heading mb-1">
+                            {{ album.title }}
+                            <span class="preview-badge">Preview</span>
+                        </h1>
+                        <p class="folder-sub mb-2">{{ album.description }}</p>
+                        <div class="d-flex flex-wrap gap-4 folder-meta-light">
+                            <span><i class="bi bi-layers me-1"></i> {{ album.total_pages }} pages</span>
+                            <span><i class="bi bi-folder me-1"></i> {{ album.folder.folder_id }}</span>
+                        </div>
+                    </div>
+                    <div class="mt-3 mt-sm-0 d-flex flex-wrap gap-2">
+                        <a href="{% url 'freelance_album_designer' album.id %}" class="btn btn-preview-outline px-4">
+                            <i class="bi bi-arrow-left me-2"></i>Back to Editor
+                        </a>
+                        <a href="{% url 'freelance_generate_album' album.id %}" class="btn btn-folder-cta px-4">
+                            <i class="bi bi-check-circle me-2"></i>Confirm &amp; Generate
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ALBUM PAGES ===== -->
+        {% for page in pages %}
+        <div class="preview-sheet mb-5">
+            <div class="preview-sheet-header">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="page-number-pill">{{ page.page_number }}</div>
+                    <h4 class="mb-0 preview-page-title">Album Page {{ page.page_number }}</h4>
+                </div>
+                <span class="preview-page-count"><i class="bi bi-images me-1"></i> Page {{ page.page_number }}</span>
+            </div>
+            <div class="preview-sheet-body">
+                <img src="{{ page.url }}" class="preview-collage" alt="Album page {{ page.page_number }}">
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state text-center">
+            <div class="empty-icon">
+                <i class="bi bi-eye-slash"></i>
+            </div>
+            <h4 class="empty-title">No pages to preview yet</h4>
+            <p class="empty-sub">Add photos and generate your album to see the preview.</p>
+        </div>
+        {% endfor %}
+
+        <!-- ===== FOOTER NOTE ===== -->
+        <div class="row mt-5">
+            <div class="col-12 text-center folder-meta">
+                <i class="bi bi-eye me-1"></i> This is how your album will look. Go back to edit if needed.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ===== STYLES ===== -->
+<style>
+    .preview-wrapper {
+        background: var(--paper, #F1ECE0);
+        min-height: 80vh;
+        background-image: radial-gradient(circle at 1px 1px, rgba(34,34,31,.05) 1px, transparent 0);
+        background-size: 18px 18px;
+    }
+
+    /* header */
+    .bg-folder-cover {
+        background: var(--ink, #22221F);
+        border-radius: 14px;
+    }
+
+    .folder-eyebrow {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: .72rem;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: var(--gold, #C18B2E);
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: .6rem;
+    }
+
+    .folder-heading {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        font-size: clamp(1.9rem, 3vw, 2.5rem);
+        color: var(--paper, #F1ECE0);
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .folder-sub {
+        color: #C8C2B2;
+        font-size: 1.05rem;
+        max-width: 480px;
+    }
+
+    .folder-meta-light {
+        color: #C8C2B2;
+        font-size: .9rem;
+        font-family: 'Inter', sans-serif;
+    }
+    .folder-meta-light i {
+        color: var(--gold, #C18B2E);
+    }
+
+    .preview-badge {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: .65rem;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        background: var(--gold, #C18B2E);
+        color: var(--ink, #22221F);
+        padding: .2rem .9rem;
+        border-radius: 999px;
+        font-weight: 600;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .btn-folder-cta {
+        background: var(--coral, #D9512F);
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: .7rem 1.8rem;
+        border: none;
+        transition: background .2s;
+    }
+    .btn-folder-cta:hover { background: #bf4324; color: #fff; }
+
+    .btn-preview-outline {
+        background: transparent;
+        color: var(--paper, #F1ECE0);
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: .7rem 1.8rem;
+        border: 1.5px solid var(--paper, #F1ECE0);
+        transition: all .2s;
+    }
+    .btn-preview-outline:hover {
+        background: var(--paper, #F1ECE0);
+        color: var(--ink, #22221F);
+    }
+
+    .folder-meta {
+        color: var(--ink-soft, #6B655A);
+        font-size: .85rem;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* preview sheet */
+    .preview-sheet {
+        background: #ffffff;
+        border: 1px solid var(--line, #D6CCB4);
+        border-radius: 0 14px 14px 14px;
+        overflow: hidden;
+        box-shadow: 0 8px 28px rgba(34,34,31,.06);
+        transition: box-shadow .3s;
+    }
+    .preview-sheet:hover {
+        box-shadow: 0 12px 40px rgba(34,34,31,.1);
+    }
+
+    .preview-sheet-header {
+        background: var(--ink, #22221F);
+        color: var(--paper, #F1ECE0);
+        padding: 1rem 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+    }
+
+    .page-number-pill {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--gold, #C18B2E);
+        color: var(--ink, #22221F);
+        font-family: 'Fraunces', serif;
+        font-weight: 700;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .preview-page-title {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        color: var(--paper, #F1ECE0);
+        font-size: 1.1rem;
+    }
+
+    .preview-page-count {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: .7rem;
+        letter-spacing: .04em;
+        color: #C8C2B2;
+        background: rgba(255,255,255,.08);
+        padding: .3rem 1rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,.06);
+    }
+
+    .preview-sheet-body {
+        padding: 1.5rem;
+        text-align: center;
+        background: var(--paper, #F1ECE0);
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .preview-collage {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(34,34,31,.12);
+        transition: transform .3s ease;
+        border: 1px solid var(--line, #D6CCB4);
+    }
+    .preview-collage:hover {
+        transform: scale(1.008);
+    }
+
+    /* empty state */
+    .empty-state {
+        background: #ffffff;
+        border: 1px solid var(--line, #D6CCB4);
+        border-radius: 14px;
+        padding: 4rem 2rem;
+        box-shadow: 0 18px 38px -18px rgba(34,34,31,.25);
+    }
+
+    .empty-icon {
+        font-size: 3.6rem;
+        color: var(--line, #D6CCB4);
+        margin-bottom: 1rem;
+    }
+
+    .empty-title {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        color: var(--ink, #22221F);
+        margin-bottom: .4rem;
+    }
+
+    .empty-sub {
+        color: var(--ink-soft, #6B655A);
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* responsive */
+    @media (max-width: 576px) {
+        .preview-header {
+            text-align: center;
+        }
+        .folder-heading {
+            justify-content: center;
+        }
+        .btn-folder-cta,
+        .btn-preview-outline {
+            width: 100%;
+            text-align: center;
+        }
+        .preview-sheet-header {
+            flex-direction: column;
+            align-items: stretch;
+            text-align: center;
+            padding: 1rem;
+        }
+        .preview-sheet-header .d-flex {
+            justify-content: center;
+        }
+        .preview-page-count {
+            align-self: center;
+        }
+        .preview-sheet-body {
+            padding: 0.8rem;
+            min-height: 140px;
+        }
+    }
+
+    @media (min-width: 577px) and (max-width: 768px) {
+        .preview-sheet-header {
+            padding: 0.8rem 1.2rem;
+        }
+        .preview-sheet-body {
+            padding: 1rem;
+        }
+    }
+</style>
+
+{% endblock %}

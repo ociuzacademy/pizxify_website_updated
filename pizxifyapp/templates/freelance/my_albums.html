@@ -1,0 +1,439 @@
+{% extends 'freelance/freelance_dashboard.html' %}
+
+{% block content %}
+
+<div class="albums-wrapper">
+    <div class="container-fluid px-4 py-5">
+
+        <!-- ===== HEADER ===== -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="albums-header d-flex flex-wrap align-items-center justify-content-between bg-folder-cover p-4 p-lg-5 rounded-4 shadow-lg">
+                    <div>
+                        <span class="folder-eyebrow"><i class="bi bi-images me-1"></i> Portfolio</span>
+                        <h1 class="folder-heading mb-2">My Albums</h1>
+                        <p class="folder-sub mb-0">
+                            All your beautifully crafted albums in one place.
+                        </p>
+                    </div>
+                    <div class="mt-3 mt-sm-0 d-flex flex-wrap gap-2">
+                        <a href="{% url 'view_folders' %}" class="btn btn-folder-cta-outline px-4">
+                            <i class="bi bi-folder me-2"></i>Browse Folders
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ALBUM GRID ===== -->
+        <div class="row g-4">
+            {% for album in albums %}
+            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                <div class="album-card h-100">
+                    <!-- album cover area -->
+                    <div class="album-cover d-flex align-items-center justify-content-center">
+                        <div class="album-cover-icon">
+                            <i class="bi bi-images"></i>
+                        </div>
+                        <div class="album-cover-badge">{{ album.total_pages }} pages</div>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <h5 class="album-title">{{ album.title }}</h5>
+                        <p class="album-description">{{ album.description|truncatechars:100 }}</p>
+
+                        <div class="album-meta-grid">
+                            <div class="meta-item">
+                                <i class="bi bi-folder"></i>
+                                <span>{{ album.folder.folder_id }}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-calendar3"></i>
+                                <span>{{ album.created_at|date:"d M Y" }}</span>
+                            </div>
+                        </div>
+
+                        <div class="album-actions">
+                            <a href="{% url 'freelance_view_album' album.id %}" class="btn btn-action btn-view">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <a href="{% url 'freelance_album_designer' album.id %}" class="btn btn-action btn-edit">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <div class="btn-group pdf-group">
+                                <a href="{% url 'freelance_download_album_pdf' album.id 'landscape' %}" class="btn btn-action btn-pdf" title="Landscape PDF">
+                                    <i class="bi bi-file-earmark-pdf"></i><span class="pdf-label">L</span>  
+                                </a>
+                                <a href="{% url 'freelance_download_album_pdf' album.id 'portrait' %}" class="btn btn-action btn-pdf" title="Portrait PDF">
+                                    <i class="bi bi-file-earmark-pdf"></i> <span class="pdf-label">P</span>
+                                </a>
+                            </div>
+                            <a href="{% url 'freelance_delete_album' album.id %}" class="btn btn-action btn-delete" onclick="return confirm('Delete Album?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                            <button type="button"
+                                    class="btn btn-action btn-view"
+                                    onclick="copyAlbumLink('{{ album.share_token }}')">
+
+                                <i class="bi bi-share"></i>
+                                Share
+
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% empty %}
+            <!-- empty state -->
+            <div class="col-12">
+                <div class="empty-state text-center">
+                    <div class="empty-icon">
+                        <i class="bi bi-images"></i>
+                    </div>
+                    <h4 class="empty-title">No Albums Found</h4>
+                    <p class="empty-sub">Create your first album to get started.</p>
+                    <a href="{% url 'view_folders' %}" class="btn btn-folder-cta px-5 mt-2">
+                        <i class="bi bi-folder-plus me-2"></i>Browse Folders
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- ===== FOOTER NOTE ===== -->
+        <div class="row mt-5">
+            <div class="col-12 text-center folder-meta">
+                <i class="bi bi-images me-1"></i> {{ albums.count }} album{% if albums.count != 1 %}s{% endif %} in your collection.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ===== STYLES ===== -->
+<style>
+    .albums-wrapper {
+        background: var(--paper, #F1ECE0);
+        min-height: 80vh;
+        background-image: radial-gradient(circle at 1px 1px, rgba(34,34,31,.05) 1px, transparent 0);
+        background-size: 18px 18px;
+    }
+
+    /* header */
+    .bg-folder-cover {
+        background: var(--ink, #22221F);
+        border-radius: 14px;
+    }
+
+    .folder-eyebrow {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: .72rem;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: var(--gold, #C18B2E);
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: .6rem;
+    }
+
+    .folder-heading {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        font-size: clamp(1.9rem, 3vw, 2.5rem);
+        color: var(--paper, #F1ECE0);
+        margin: 0;
+    }
+
+    .folder-sub {
+        color: #C8C2B2;
+        font-size: 1.05rem;
+        max-width: 480px;
+    }
+
+    .btn-folder-cta {
+        background: var(--coral, #D9512F);
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: .7rem 1.8rem;
+        border: none;
+        transition: background .2s;
+    }
+    .btn-folder-cta:hover { background: #bf4324; color: #fff; }
+
+    .btn-folder-cta-outline {
+        background: transparent;
+        color: var(--paper, #F1ECE0);
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: .7rem 1.8rem;
+        border: 1.5px solid var(--paper, #F1ECE0);
+        transition: all .2s;
+    }
+    .btn-folder-cta-outline:hover {
+        background: var(--paper, #F1ECE0);
+        color: var(--ink, #22221F);
+    }
+
+    .folder-meta {
+        color: var(--ink-soft, #6B655A);
+        font-size: .85rem;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* album card */
+    .album-card {
+        background: #ffffff;
+        border: 1px solid var(--line, #D6CCB4);
+        border-radius: 0 14px 14px 14px;
+        box-shadow: 0 8px 24px rgba(34,34,31,.06);
+        overflow: hidden;
+        transition: transform .25s ease, box-shadow .3s ease;
+    }
+    .album-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 40px rgba(34,34,31,.12);
+    }
+
+    .album-cover {
+        background: linear-gradient(145deg, #2b2d42, #1d1f2c);
+        padding: 1.8rem 1.5rem;
+        position: relative;
+        min-height: 120px;
+        border-radius: 0 14px 0 0;
+    }
+
+    .album-cover-icon {
+        font-size: 3.2rem;
+        color: var(--paper, #F1ECE0);
+        opacity: 0.6;
+    }
+
+    .album-cover-badge {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: .7rem;
+        letter-spacing: .04em;
+        background: rgba(255,255,255,.12);
+        color: var(--paper, #F1ECE0);
+        padding: .3rem .9rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .album-title {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        color: var(--ink, #22221F);
+        margin-bottom: .4rem;
+        font-size: 1.1rem;
+    }
+
+    .album-description {
+        color: var(--ink-soft, #6B655A);
+        font-size: .9rem;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+        min-height: 2.8rem;
+    }
+
+    .album-meta-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.4rem 0.8rem;
+        margin-bottom: 1.2rem;
+        padding: 0.6rem 0.8rem;
+        background: var(--paper, #F1ECE0);
+        border-radius: 8px;
+        border: 1px solid var(--line, #D6CCB4);
+    }
+
+    .meta-item {
+        font-size: .8rem;
+        color: var(--ink-soft, #6B655A);
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    .meta-item i {
+        color: var(--gold, #C18B2E);
+        font-size: .85rem;
+        width: 16px;
+        text-align: center;
+    }
+    .meta-item span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* action buttons */
+    .album-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        align-items: center;
+    }
+
+    .btn-action {
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        font-size: .8rem;
+        border-radius: 999px;
+        border: 1.5px solid var(--line, #D6CCB4);
+        background: transparent;
+        padding: .3rem 0.9rem;
+        transition: all .2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .btn-view {
+        border-color: var(--moss, #56725A);
+        color: var(--moss, #56725A);
+    }
+    .btn-view:hover {
+        background: var(--moss, #56725A);
+        color: #fff;
+    }
+
+    .btn-edit {
+        border-color: var(--gold, #C18B2E);
+        color: var(--gold, #C18B2E);
+    }
+    .btn-edit:hover {
+        background: var(--gold, #C18B2E);
+        color: #fff;
+    }
+
+    .btn-pdf {
+        border-color: var(--coral, #D9512F);
+        color: var(--coral, #D9512F);
+        padding: .3rem 0.7rem;
+    }
+    .btn-pdf:hover {
+        background: var(--coral, #D9512F);
+        color: #fff;
+    }
+
+    .btn-delete {
+        border-color: var(--coral, #D9512F);
+        color: var(--coral, #D9512F);
+        padding: .3rem 0.7rem;
+    }
+    .btn-delete:hover {
+        background: var(--coral, #D9512F);
+        color: #fff;
+    }
+
+    .pdf-group {
+        display: inline-flex;
+        gap: 0;
+        border-radius: 999px;
+        overflow: hidden;
+        border: 1.5px solid var(--coral, #D9512F);
+    }
+    .pdf-group .btn-pdf {
+        border: none;
+        border-radius: 0;
+        padding: .3rem 0.7rem;
+    }
+    .pdf-group .btn-pdf:first-child {
+        border-right: 1px solid var(--coral, #D9512F);
+    }
+    .pdf-group .btn-pdf:hover {
+        background: var(--coral, #D9512F);
+        color: #fff;
+    }
+    .pdf-label {
+        font-size: .65rem;
+        font-weight: 700;
+        font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* empty state */
+    .empty-state {
+        background: #ffffff;
+        border: 1px solid var(--line, #D6CCB4);
+        border-radius: 14px;
+        padding: 4rem 2rem;
+        box-shadow: 0 18px 38px -18px rgba(34,34,31,.25);
+    }
+
+    .empty-icon {
+        font-size: 3.6rem;
+        color: var(--line, #D6CCB4);
+        margin-bottom: 1rem;
+    }
+
+    .empty-title {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        color: var(--ink, #22221F);
+        margin-bottom: .4rem;
+    }
+
+    .empty-sub {
+        color: var(--ink-soft, #6B655A);
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* responsive */
+    @media (max-width: 576px) {
+        .albums-header {
+            text-align: center;
+        }
+        .btn-folder-cta,
+        .btn-folder-cta-outline {
+            width: 100%;
+            text-align: center;
+        }
+        .album-meta-grid {
+            grid-template-columns: 1fr;
+        }
+        .album-actions {
+            justify-content: center;
+        }
+        .album-cover {
+            min-height: 90px;
+        }
+        .album-cover-icon {
+            font-size: 2.4rem;
+        }
+    }
+
+    @media (min-width: 577px) and (max-width: 768px) {
+        .album-actions {
+            gap: 0.3rem;
+        }
+        .btn-action {
+            font-size: .7rem;
+            padding: .25rem 0.6rem;
+        }
+        .pdf-group .btn-pdf {
+            padding: .25rem 0.5rem;
+        }
+    }
+</style>
+<script>
+function copyAlbumLink(token){
+
+    const url =
+        window.location.origin +
+        '/album-share/' +
+        token +
+        '/';
+
+    navigator.clipboard.writeText(url);
+
+    alert('Link Copied');
+
+}
+</script>
+{% endblock %}

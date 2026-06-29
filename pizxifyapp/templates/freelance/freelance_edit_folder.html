@@ -1,0 +1,299 @@
+{% extends 'freelance/freelance_dashboard.html' %}
+
+{% block content %}
+
+<div class="edit-folder-wrapper">
+    <div class="container-fluid px-4 py-5">
+
+        <!-- ===== HEADER ===== -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="folder-header d-flex flex-wrap align-items-center justify-content-between bg-folder-cover p-4 p-lg-5 rounded-4 shadow-lg">
+                    <div>
+                        <span class="folder-eyebrow"><i class="bi bi-pencil-square me-1"></i> Edit folder</span>
+                        <h1 class="folder-heading mb-2">Edit Folder</h1>
+                        <p class="folder-sub mb-0">
+                            Update the name or password for your folder – keep your albums safe and organized.
+                        </p>
+                    </div>
+                    <div class="mt-3 mt-sm-0">
+                        <a href="{% url 'freelance_view_folders' %}" class="btn btn-folder-cta-outline px-5">
+                            <i class="bi bi-arrow-left me-2"></i>Back to Folders
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== EDIT FOLDER CARD ===== -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+                <div class="folder-edit-card">
+                    <div class="card-body p-4 p-lg-5">
+
+                        <!-- folder icon / visual cue -->
+                        <div class="text-center mb-4">
+                            <div class="folder-icon-circle">
+                                <i class="bi bi-folder"></i>
+                            </div>
+                            <h5 class="folder-edit-title mt-3">Editing: <span class="text-muted">{{ folder.folder_id }}</span></h5>
+                            <p class="folder-meta">Update the details below to modify this folder.</p>
+                        </div>
+
+                        <form method="POST">
+                            {% csrf_token %}
+
+                            <div class="mb-4">
+                                <label class="folder-field-label"><i class="bi bi-tag me-1"></i>Folder name</label>
+                                <input type="text"
+                                       name="folder_id"
+                                       value="{{ folder.folder_id }}"
+                                       class="form-control folder-input"
+                                       placeholder="e.g. Wedding – Smith & Jones"
+                                       required>
+                                <small class="text-muted" style="font-size:.78rem; display:block; margin-top:.35rem;">Choose a unique, descriptive name.</small>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="folder-field-label"><i class="bi bi-lock me-1"></i>Folder password</label>
+                                <div class="input-group">
+                                    <input type="password"
+                                           name="password"
+                                           value="{{ folder.password }}"
+                                           class="form-control folder-input"
+                                           placeholder="Enter a strong password"
+                                           id="folderPassword"
+                                           required>
+                                    <button type="button" class="btn toggle-password" id="togglePasswordBtn">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                                <small class="text-muted" style="font-size:.78rem; display:block; margin-top:.35rem;">This password will be required to access the folder.</small>
+                            </div>
+
+                            <div class="d-flex flex-wrap gap-3 mt-4">
+                                <button type="submit" class="btn btn-folder-cta px-5 py-2">
+                                    <i class="bi bi-check-circle me-2"></i>Update Folder
+                                </button>
+                                <a href="{% url 'freelance_view_folders' %}" class="btn btn-folder-cta-outline-secondary px-5 py-2">
+                                    Cancel
+                                </a>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== FOOTER NOTE ===== -->
+        <div class="row mt-5">
+            <div class="col-12 text-center folder-meta">
+                <i class="bi bi-folder2-open me-1"></i> Keep your work organized. Every folder tells a story.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ===== STYLES ===== -->
+<style>
+    .edit-folder-wrapper {
+        background: var(--paper, #F1ECE0);
+        min-height: 80vh;
+        background-image: radial-gradient(circle at 1px 1px, rgba(34,34,31,.05) 1px, transparent 0);
+        background-size: 18px 18px;
+    }
+
+    /* header */
+    .bg-folder-cover {
+        background: var(--ink, #22221F);
+        border-radius: 14px;
+    }
+
+    .folder-eyebrow {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: .72rem;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: var(--gold, #C18B2E);
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: .6rem;
+    }
+
+    .folder-heading {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        font-size: clamp(1.9rem, 3vw, 2.5rem);
+        color: var(--paper, #F1ECE0);
+        margin: 0;
+    }
+
+    .folder-sub {
+        color: #C8C2B2;
+        font-size: 1.05rem;
+        max-width: 480px;
+    }
+
+    .btn-folder-cta {
+        background: var(--moss, #56725A);
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: .75rem 0;
+        border: none;
+        transition: background .2s;
+    }
+    .btn-folder-cta:hover { background: #3f5c44; color: #fff; }
+
+    .btn-folder-cta-outline {
+        background: transparent;
+        color: var(--paper, #F1ECE0);
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: .75rem 0;
+        border: 1.5px solid var(--paper, #F1ECE0);
+        transition: all .2s;
+    }
+    .btn-folder-cta-outline:hover {
+        background: var(--paper, #F1ECE0);
+        color: var(--ink, #22221F);
+    }
+
+    .btn-folder-cta-outline-secondary {
+        background: transparent;
+        color: var(--ink-soft, #6B655A);
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: .75rem 0;
+        border: 1.5px solid var(--line, #D6CCB4);
+        transition: all .2s;
+    }
+    .btn-folder-cta-outline-secondary:hover {
+        background: var(--paper-deep, #E7DFCC);
+        color: var(--ink, #22221F);
+    }
+
+    /* edit folder card */
+    .folder-edit-card {
+        background: #ffffff;
+        border: 1px solid var(--line, #D6CCB4);
+        border-radius: 0 16px 16px 16px;
+        box-shadow: 0 18px 38px -18px rgba(34,34,31,.35);
+    }
+
+    .folder-icon-circle {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: var(--paper-deep, #E7DFCC);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.2rem;
+        color: var(--gold, #C18B2E);
+        border: 2px solid var(--line, #D6CCB4);
+    }
+
+    .folder-edit-title {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        color: var(--ink, #22221F);
+        margin-bottom: .2rem;
+    }
+
+    .folder-field-label {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: .72rem;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        color: var(--ink-soft, #6B655A);
+        display: block;
+        margin-bottom: .4rem;
+    }
+
+    .folder-input {
+        font-family: 'Inter', sans-serif;
+        font-size: 1rem;
+        border: 1px solid var(--line, #D6CCB4);
+        border-radius: 8px;
+        background: var(--paper, #F1ECE0);
+        padding: .65rem .9rem;
+        color: var(--ink, #22221F);
+        transition: border-color .2s, box-shadow .2s;
+    }
+    .folder-input:focus {
+        border-color: var(--moss, #56725A);
+        box-shadow: 0 0 0 3px rgba(86, 114, 90, .15);
+        background: #fff;
+    }
+
+    .folder-input::placeholder {
+        color: #a8a09a;
+    }
+
+    .toggle-password {
+        border: 1px solid var(--line, #D6CCB4);
+        border-left: none;
+        background: var(--paper, #F1ECE0);
+        color: var(--ink-soft, #6B655A);
+        border-radius: 0 8px 8px 0;
+        padding: 0 1rem;
+    }
+    .toggle-password:hover {
+        background: var(--paper-deep, #E7DFCC);
+        color: var(--ink, #22221F);
+    }
+
+    .folder-meta {
+        color: var(--ink-soft, #6B655A);
+        font-size: .85rem;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* responsive */
+    @media (max-width: 576px) {
+        .folder-header {
+            text-align: center;
+        }
+        .btn-folder-cta,
+        .btn-folder-cta-outline,
+        .btn-folder-cta-outline-secondary {
+            width: 100%;
+            text-align: center;
+        }
+        .folder-edit-card .card-body {
+            padding: 1.5rem !important;
+        }
+    }
+</style>
+
+<!-- ===== SCRIPT ===== -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // toggle password visibility for the edit form
+        const toggleBtn = document.getElementById('togglePasswordBtn');
+        const passwordInput = document.getElementById('folderPassword');
+
+        if (toggleBtn && passwordInput) {
+            toggleBtn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    icon.classList.remove('bi-eye');
+                    icon.classList.add('bi-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    icon.classList.remove('bi-eye-slash');
+                    icon.classList.add('bi-eye');
+                }
+            });
+        }
+    });
+</script>
+
+{% endblock %}

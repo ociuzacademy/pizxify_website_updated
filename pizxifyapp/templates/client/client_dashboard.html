@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PIZXIFY – Smart Digital Album Platform</title>
+
+  <!-- Bootstrap 5 CSS - Load first -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <!-- AOS CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+
+  <!-- Custom CSS - Load after Bootstrap -->
+  <link rel="stylesheet" href="/static/assets/css/style.css" />
+
+  <!-- Album typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --paper:#F1ECE0;
+  --paper-deep:#E7DFCC;
+  --ink:#22221F;
+  --ink-soft:#6B655A;
+  --coral:#D9512F;
+  --moss:#56725A;
+  --gold:#C18B2E;
+  --surface:#FFFCF6;
+  --line:#D6CCB4;
+  --shadow: 0 18px 38px -18px rgba(34,34,31,.35);
+}
+*{box-sizing:border-box;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(34,34,31,.05) 1px, transparent 0);
+  background-size: 18px 18px;
+}
+h1,h2,h3,h4,h5{
+  font-family:'Fraunces',serif;
+  color:var(--ink);
+  letter-spacing:-0.01em;
+}
+a{ text-decoration:none; }
+.eyebrow-mono{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--coral);
+}
+
+/* ===== NAVBAR ===== */
+.navbar-pizxify{
+  background:var(--paper);
+  border-bottom:1px solid var(--line);
+  padding:1rem 0;
+  position:sticky; top:0; z-index:40;
+}
+.navbar-brand-logo{
+  font-family:'Fraunces',serif;
+  font-weight:700;
+  font-size:1.4rem;
+  color:var(--ink);
+  display:flex; align-items:center; gap:.5rem;
+}
+.navbar-brand-logo i{ color:var(--coral); }
+.nav-link-custom{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;
+  letter-spacing:.04em;
+  color:var(--ink-soft);
+  padding:.5rem .9rem;
+  border-radius:999px;
+  border:none;
+  background:none;
+}
+.nav-link-custom.active, .nav-link-custom:hover{
+  color:var(--ink); background:var(--paper-deep);
+}
+.btn-accent{
+  background:var(--coral); color:#fff; border:none;
+  font-family:'Inter',sans-serif; font-weight:600;
+  border-radius:8px; padding:.5rem 1.1rem;
+}
+.btn-accent:hover{ background:#bf4324; color:#fff; }
+.btn-outline-secondary{
+  border-color:var(--line); color:var(--ink); font-weight:500;
+}
+.btn-outline-secondary:hover{
+  background:var(--ink); border-color:var(--ink); color:var(--paper);
+}
+.btn-outline-light-custom{
+  border:1.5px solid var(--surface); color:var(--surface);
+  border-radius:8px; font-weight:600;
+}
+.btn-outline-light-custom:hover{ background:var(--surface); color:var(--ink); }
+
+/* ===== FOLDER ACCESS MODAL ===== */
+.modal-content{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:8px;
+  box-shadow:var(--shadow);
+}
+.modal-header{
+  border-bottom:1px solid var(--line);
+  padding:1.2rem 1.4rem;
+}
+.modal-header .modal-title{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  color:var(--ink);
+}
+.modal-body{ padding:1.4rem; }
+.modal-body .form-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.78rem;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+}
+.modal-body .form-control{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:6px;
+  padding:.6rem .8rem;
+}
+.modal-body .form-control:focus{
+  border-color:var(--coral);
+  box-shadow:0 0 0 .2rem rgba(217,81,47,.15);
+}
+.modal-footer{
+  border-top:1px solid var(--line);
+  padding:1rem 1.4rem;
+}
+.modal-footer .btn-primary{
+  background:var(--coral);
+  border:none;
+  font-weight:600;
+  border-radius:8px;
+}
+.modal-footer .btn-primary:hover{ background:#bf4324; }
+
+/* ===== HERO ===== */
+.hero{
+  position:relative;
+  padding:5.5rem 0 4rem;
+  overflow:hidden;
+}
+.hero .badge-eyebrow{
+  display:inline-flex; align-items:center; gap:.4rem;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.75rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--moss);
+  background:#fff; border:1px solid var(--line);
+  padding:.4rem .8rem; border-radius:999px;
+  margin-bottom:1.4rem;
+}
+.hero h1{
+  font-size:clamp(2.2rem, 4.6vw, 3.4rem);
+  font-weight:600; line-height:1.08;
+}
+.hero h1 span{
+  font-style:italic; color:var(--coral); font-weight:500; font-family:'Fraunces',serif;
+}
+.hero p.lead{
+  color:var(--ink-soft); font-size:1.1rem; max-width:560px; margin-left:auto; margin-right:auto;
+}
+
+/* Photo stack visual */
+.photo-stack{
+  position:relative; height:300px; max-width:560px; margin:2.5rem auto 0;
+}
+.snap{
+  position:absolute;
+  background:var(--surface);
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  padding:10px 10px 30px 10px;
+  border-radius:2px;
+}
+.snap .frame{ width:100%; height:100%; border-radius:1px; }
+.snap .cap{
+  position:absolute; bottom:7px; left:12px; right:12px;
+  font-family:'Caveat',cursive; font-size:1.05rem; color:var(--ink-soft);
+}
+.tape{
+  position:absolute; width:56px; height:20px;
+  background:rgba(255,255,255,.55);
+  border:1px solid rgba(0,0,0,.05);
+  box-shadow:0 2px 4px rgba(0,0,0,.08);
+}
+.snap-a{ width:190px; height:210px; top:0; left:calc(50% - 160px); transform:rotate(-6deg); z-index:3;}
+.snap-a .frame{ background:linear-gradient(155deg,#E2C9A0,#C18B2E 60%, #6B4A23); }
+.snap-a .tape{ top:-9px; left:24px; transform:rotate(-10deg);}
+.snap-b{ width:170px; height:185px; top:55px; left:calc(50% - 30px); transform:rotate(5deg); z-index:2;}
+.snap-b .frame{ background:linear-gradient(155deg,#9FB6A2,#56725A 65%, #2E4030); }
+.snap-b .tape{ top:-9px; right:20px; transform:rotate(8deg);}
+.snap-c{ width:165px; height:120px; top:155px; left:calc(50% + 110px); transform:rotate(-3deg); z-index:4;}
+.snap-c .frame{ background:linear-gradient(155deg,#EFAA94,#D9512F 65%, #7E2D17); }
+.snap-c .tape{ top:-9px; left:50px; transform:rotate(-6deg);}
+
+/* ===== SECTION SHELL ===== */
+.section-pad{ padding:5rem 0; }
+.section-pad-alt{ padding:5rem 0; background:var(--paper-deep); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.section-badge{
+  font-family:'JetBrains Mono',monospace; font-size:.75rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--moss); display:inline-flex; align-items:center; gap:.4rem;
+}
+.section-title{ font-size:clamp(1.8rem,3vw,2.4rem); font-weight:600; margin-top:.5rem; }
+.section-sub{ color:var(--ink-soft); max-width:560px; margin:.6rem auto 0; }
+
+/* ===== FEATURES — taped polaroids ===== */
+.feature-card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:3px;
+  padding:1.6rem 1.4rem 1.4rem;
+  position:relative;
+  box-shadow:var(--shadow);
+  height:100%;
+  transition:transform .25s ease;
+}
+.feature-card:nth-child(odd){ transform:rotate(-1.1deg); }
+.feature-card:nth-child(even){ transform:rotate(1deg); }
+.feature-card:hover{ transform:rotate(0) translateY(-4px); }
+.feature-card::before{
+  content:""; position:absolute; top:-9px; left:50%; transform:translateX(-50%) rotate(-2deg);
+  width:52px; height:18px; background:rgba(255,255,255,.5);
+  border:1px solid rgba(0,0,0,.05); box-shadow:0 2px 3px rgba(0,0,0,.08);
+}
+.feature-icon{
+  width:46px; height:46px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--paper-deep); color:var(--coral); font-size:1.2rem;
+  margin-bottom:.9rem;
+}
+.feature-card h5{ font-size:1.05rem; margin-bottom:.4rem; }
+.feature-card p{ color:var(--ink-soft); font-size:.92rem; margin:0; }
+
+/* ===== FILMSTRIP — how it works (real sequence) ===== */
+.filmstrip{
+  background:var(--ink);
+  border-radius:6px;
+  padding:1.4rem .8rem;
+  position:relative;
+  overflow-x:auto;
+}
+.filmstrip .sprockets{
+  display:flex; justify-content:space-around; padding:0 .5rem;
+}
+.filmstrip .sprockets span{
+  width:10px; height:10px; border-radius:2px; background:var(--paper);
+  opacity:.7; display:inline-block;
+}
+.filmstrip-row{
+  display:flex; gap:0; margin:.6rem 0;
+}
+.frame-step{
+  flex:1 0 0;
+  min-width:170px;
+  border-left:2px dashed rgba(255,255,255,.18);
+  padding:1.1rem .9rem;
+  color:var(--paper);
+}
+.frame-step:first-child{ border-left:none; }
+.frame-step .step-number{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.78rem; color:var(--gold);
+  border:1px solid var(--gold); border-radius:999px;
+  width:28px; height:28px; display:flex; align-items:center; justify-content:center;
+  margin-bottom:.7rem;
+}
+.frame-step h5{ color:var(--paper); font-size:1rem; margin-bottom:.3rem; }
+.frame-step p{ color:#C8C2B2; font-size:.85rem; margin:0; }
+
+/* ===== USER TYPES — index dividers ===== */
+.divider-card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:0 10px 10px 10px;
+  padding:1.8rem 1.6rem 1.6rem;
+  height:100%;
+  position:relative;
+  box-shadow:var(--shadow);
+}
+.divider-tab{
+  position:absolute; top:-26px; left:0;
+  background:var(--moss); color:#fff;
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+  padding:.5rem .9rem; border-radius:8px 8px 0 0;
+}
+.divider-card:nth-child(2) .divider-tab{ background:var(--coral); }
+.divider-card:nth-child(3) .divider-tab{ background:var(--gold); }
+.user-type-icon{ font-size:1.6rem; color:var(--ink); margin-bottom:.6rem; }
+.divider-card ul{ list-style:none; padding:0; margin:1rem 0 0; }
+.divider-card ul li{ display:flex; gap:.5rem; margin-bottom:.55rem; color:var(--ink-soft); font-size:.92rem; }
+.divider-card ul li i{ color:var(--moss); margin-top:.2rem; }
+
+/* ===== STATS — counter readout ===== */
+.stats-section{ background:var(--ink); padding:3.4rem 0; }
+.stat-item{ border-left:2px solid rgba(241,236,224,.18); padding-left:1.2rem; }
+.stat-number{
+  font-family:'JetBrains Mono',monospace;
+  font-size:2.1rem; font-weight:500; color:var(--gold);
+}
+.stat-label{
+  font-family:'Inter',sans-serif; font-size:.8rem; letter-spacing:.04em;
+  color:#C8C2B2; text-transform:uppercase; margin-top:.2rem;
+}
+
+/* ===== TESTIMONIALS ===== */
+.testimonial-card{
+  background:var(--surface); border:1px solid var(--line);
+  border-radius:3px; padding:1.6rem; height:100%; box-shadow:var(--shadow);
+}
+.testimonial-card .stars{ color:var(--gold); margin-bottom:.7rem; font-size:.85rem; }
+.testimonial-card p{
+  font-family:'Caveat',cursive; font-size:1.3rem; line-height:1.4;
+  color:var(--ink); margin-bottom:1.1rem;
+}
+.testimonial-avatar{
+  width:42px; height:42px; border-radius:50%;
+  background:var(--paper-deep); color:var(--ink);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'JetBrains Mono',monospace; font-size:.85rem;
+}
+.testimonial-name{ font-weight:600; font-size:.92rem; }
+.testimonial-role{ font-size:.78rem; color:var(--ink-soft); }
+
+/* ===== CTA — closed album cover ===== */
+.cta-section{
+  background:var(--ink);
+  color:var(--paper);
+  padding:4.5rem 0;
+  position:relative;
+}
+.cta-section h2{ color:var(--paper); font-size:clamp(1.9rem,3.5vw,2.6rem); }
+.cta-section p{ color:#C8C2B2; }
+
+/* ===== FOOTER ===== */
+.footer-main{ background:var(--paper-deep); border-top:1px solid var(--line); padding:3.5rem 0 1.5rem; }
+.footer-brand{ font-family:'Fraunces',serif; font-weight:700; font-size:1.3rem; display:flex; gap:.5rem; align-items:center; color:var(--ink); }
+.footer-brand i{ color:var(--coral); }
+.footer-desc{ color:var(--ink-soft); font-size:.9rem; max-width:380px; margin-top:.7rem; }
+.social-link{
+  width:34px; height:34px; border-radius:50%; border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center; color:var(--ink);
+}
+.footer-heading{
+  font-family:'JetBrains Mono',monospace; font-size:.75rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-soft); margin-bottom:.8rem;
+}
+.footer-link{ display:block; color:var(--ink); font-size:.92rem; margin-bottom:.5rem; }
+.footer-link:hover{ color:var(--coral); }
+.footer-bottom{ border-top:1px solid var(--line); margin-top:2rem; padding-top:1.2rem; color:var(--ink-soft); font-size:.85rem; }
+
+@media (max-width: 991px){
+  .photo-stack{ height:260px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar-pizxify">
+
+    <div class="container d-flex align-items-center justify-content-between">
+
+        <a href="{% url 'client_dashboard' %}"
+           class="navbar-brand-logo">
+
+            <i class="bi bi-camera2"></i>
+            PIZXIFY
+
+        </a>
+
+        <!-- Desktop Navigation -->
+
+        <div class="d-none d-md-flex align-items-center gap-1">
+
+            <a href="{% url 'client_dashboard' %}"
+               class="nav-link-custom active">
+
+                Home
+
+            </a>
+
+            <a href="{% url 'client_profile' %}"
+               class="nav-link-custom">
+
+                Profile
+
+            </a>
+
+            <a href="#"
+               class="nav-link-custom"
+               data-bs-toggle="modal"
+               data-bs-target="#folderAccessModal">
+
+                Folder
+
+            </a>
+            <a href="{% url 'favorite_photos' %}"class="nav-link-custom">Favorites</a>
+        </div>
+
+        <!-- Right Side -->
+
+        <div class="d-flex align-items-center gap-2">
+
+            <a href="{% url 'logout' %}"
+               class="btn btn-outline-secondary btn-sm rounded-pill px-3 d-none d-sm-inline-flex">
+
+                Logout
+
+            </a>
+
+            <button class="btn btn-sm d-md-none border-0 ms-1"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#mobileMenu">
+
+                <i class="bi bi-list fs-5"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- Mobile Menu -->
+
+    <div class="collapse container"
+         id="mobileMenu">
+
+        <div class="d-flex flex-column py-2 gap-1">
+
+            <a href="{% url 'client_dashboard' %}"
+               class="nav-link-custom">
+
+                Home
+
+            </a>
+
+            <a href="{% url 'client_profile' %}"
+               class="nav-link-custom">
+
+                Profile
+
+            </a>
+
+            <a href="#"
+               class="nav-link-custom"
+               data-bs-toggle="modal"
+               data-bs-target="#folderAccessModal">
+
+                Folder
+
+            </a>
+            <a href="{% url 'favorite_photos' %}" class="nav-link-custom">Favorites</a>
+
+            <a href="{% url 'logout' %}"
+               class="nav-link-custom">
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+<div class="modal fade"
+     id="folderAccessModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <form method="POST"
+                  action="{% url 'access_folder' %}">
+
+                {% csrf_token %}
+
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Access Folder
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <label class="form-label">
+                        Enter Folder Password
+                    </label>
+
+                    <input type="password"
+                           name="password"
+                           class="form-control"
+                           placeholder="Folder Password"
+                           required>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Open Folder
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- Messages -->
+{% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'warning' %}warning{% elif message.tags == 'success' %}success{% else %}info{% endif %} alert-dismissible fade show"
+             role="alert">
+
+            {{ message }}
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% block content %}
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container text-center">
+    <div data-aos="fade-up" data-aos-delay="0">
+      <span class="badge-eyebrow"><i class="bi bi-camera2"></i> Smart digital album platform</span>
+      <h1 class="mb-4">
+        Create, organize &amp; share<br>
+        your memories with <span>Pizxify</span>
+      </h1>
+      <p class="lead mb-5">
+        A smart digital album platform for clients, freelance users, and professional photographers.
+      </p>
+      <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+        <a href="{% url 'client_dashboard' %}" class="btn btn-accent px-4 py-2 fs-6">
+          <i class="bi bi-arrow-right-circle me-2"></i>Get Started
+        </a>
+        <a href="#features" class="btn px-4 py-2 fs-6" style="border:1.5px solid var(--ink); color:var(--ink); border-radius:8px; font-weight:600;">
+          <i class="bi bi-grid me-2"></i>Explore Features
+        </a>
+      </div>
+    </div>
+    <div class="photo-stack" data-aos="fade-up" data-aos-delay="120">
+      <div class="snap snap-a"><div class="frame"></div><div class="tape"></div><div class="cap">client delivery</div></div>
+      <div class="snap snap-b"><div class="frame"></div><div class="tape"></div><div class="cap">wedding set</div></div>
+      <div class="snap snap-c"><div class="frame"></div><div class="tape"></div><div class="cap">favorites</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section id="features" class="section-pad">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <span class="section-badge"><i class="bi bi-grid-3x3-gap"></i> What's inside the album</span>
+      <h2 class="section-title">Everything an album needs</h2>
+      <p class="section-sub">Powerful tools built for photographers, clients, and creative professionals.</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="0">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-camera2"></i></div>
+          <h5>Digital album creation</h5>
+          <p>Build stunning digital albums in minutes with professional templates.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="60">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-arrows-move"></i></div>
+          <h5>Drag &amp; drop arrangement</h5>
+          <p>Easily arrange photos with an intuitive drag and drop interface.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="120">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-shield-lock"></i></div>
+          <h5>Password-protected albums</h5>
+          <p>Keep your memories secure with password-protected private albums.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="180">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-file-earmark-pdf"></i></div>
+          <h5>PDF album download</h5>
+          <p>Export your albums as high-quality PDFs for printing or sharing.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="0">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-share"></i></div>
+          <h5>Secure sharing</h5>
+          <p>Share albums safely with clients, friends, and family worldwide.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="60">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-heart"></i></div>
+          <h5>Favorites collection</h5>
+          <p>Let clients mark and collect their favorite shots effortlessly.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="120">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-people"></i></div>
+          <h5>Photographer management</h5>
+          <p>Manage clients and projects in one organized professional hub.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="180">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="bi bi-briefcase"></i></div>
+          <h5>Freelance album creation</h5>
+          <p>Tailored tools for independent creative professionals on the go.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="section-pad-alt">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <span class="section-badge"><i class="bi bi-film"></i> How it works</span>
+      <h2 class="section-title">Up and running in 5 steps</h2>
+      <p class="section-sub">From registration to sharing — it takes just a few minutes.</p>
+    </div>
+    <div class="filmstrip" data-aos="fade-up">
+      <div class="sprockets">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="filmstrip-row">
+        <div class="frame-step">
+          <div class="step-number">1</div>
+          <h5>Register</h5>
+          <p>Create your free account in seconds.</p>
+        </div>
+        <div class="frame-step">
+          <div class="step-number">2</div>
+          <h5>Upload photos</h5>
+          <p>Securely upload high-res images.</p>
+        </div>
+        <div class="frame-step">
+          <div class="step-number">3</div>
+          <h5>Create albums</h5>
+          <p>Organize into beautiful digital albums.</p>
+        </div>
+        <div class="frame-step">
+          <div class="step-number">4</div>
+          <h5>Arrange photos</h5>
+          <p>Design the perfect layout with ease.</p>
+        </div>
+        <div class="frame-step">
+          <div class="step-number">5</div>
+          <h5>Share &amp; download</h5>
+          <p>Deliver to clients or download as PDF.</p>
+        </div>
+      </div>
+      <div class="sprockets">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== USER TYPES ===== -->
+<section class="section-pad">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <span class="section-badge"><i class="bi bi-person-circle"></i> User types</span>
+      <h2 class="section-title">Built for everyone</h2>
+      <p class="section-sub">Whether you shoot professionally or capture family moments, Pizxify has you covered.</p>
+    </div>
+    <div class="row g-4 pt-3">
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+        <div class="divider-card">
+          <span class="divider-tab">Photographer</span>
+          <div class="user-type-icon"><i class="bi bi-camera2"></i></div>
+          <h4>Photographer</h4>
+          <ul>
+            <li><i class="bi bi-check-circle-fill"></i> Create secure client folders</li>
+            <li><i class="bi bi-check-circle-fill"></i> Upload event photos in bulk</li>
+            <li><i class="bi bi-check-circle-fill"></i> Build professional gallery albums</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="divider-card">
+          <span class="divider-tab">Client</span>
+          <div class="user-type-icon"><i class="bi bi-person"></i></div>
+          <h4>Client</h4>
+          <ul>
+            <li><i class="bi bi-check-circle-fill"></i> Access shared photographer albums</li>
+            <li><i class="bi bi-check-circle-fill"></i> Like and collect favourite photos</li>
+            <li><i class="bi bi-check-circle-fill"></i> Download PDF albums with ease</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="divider-card">
+          <span class="divider-tab">Freelance</span>
+          <div class="user-type-icon"><i class="bi bi-briefcase"></i></div>
+          <h4>Freelance Client</h4>
+          <ul>
+            <li><i class="bi bi-check-circle-fill"></i> Upload personal photo collections</li>
+            <li><i class="bi bi-check-circle-fill"></i> Create independent albums</li>
+            <li><i class="bi bi-check-circle-fill"></i> Share albums with secure links</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<section class="stats-section">
+  <div class="container">
+    <div class="row g-4 text-center">
+      <div class="col-6 col-lg-3" data-aos="zoom-in" data-aos-delay="0">
+        <div class="stat-item">
+          <div class="stat-number counter" data-target="10000" data-suffix="+">0</div>
+          <div class="stat-label">Photos Managed</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3" data-aos="zoom-in" data-aos-delay="80">
+        <div class="stat-item">
+          <div class="stat-number counter" data-target="2500" data-suffix="+">0</div>
+          <div class="stat-label">Albums Created</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3" data-aos="zoom-in" data-aos-delay="160">
+        <div class="stat-item">
+          <div class="stat-number counter" data-target="500" data-suffix="+">0</div>
+          <div class="stat-label">Photographers</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3" data-aos="zoom-in" data-aos-delay="240">
+        <div class="stat-item">
+          <div class="stat-number counter" data-target="15000" data-suffix="+">0</div>
+          <div class="stat-label">Happy Users</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="section-pad-alt">
+  <div class="container">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <span class="section-badge"><i class="bi bi-chat-quote"></i> Testimonials</span>
+      <h2 class="section-title">Loved by creators</h2>
+      <p class="section-sub">Hear from the photographers and clients who use Pizxify every day.</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+        <div class="testimonial-card">
+          <div class="stars">
+            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+          </div>
+          <p>"Pizxify completely transformed how I deliver photos to clients. The elegant interface makes my work shine."</p>
+          <div class="d-flex align-items-center gap-3">
+            <div class="testimonial-avatar">SJ</div>
+            <div>
+              <div class="testimonial-name">Sarah Jenkins</div>
+              <div class="testimonial-role">Wedding Photographer</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="testimonial-card">
+          <div class="stars">
+            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+          </div>
+          <p>"The password protection and favorites collection saved me hours of back-and-forth emails with clients."</p>
+          <div class="d-flex align-items-center gap-3">
+            <div class="testimonial-avatar">MT</div>
+            <div>
+              <div class="testimonial-name">Marcus Thorne</div>
+              <div class="testimonial-role">Freelance Client</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="testimonial-card">
+          <div class="stars">
+            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
+          </div>
+          <p>"I organized all my family vacation photos in minutes. The PDF download feature is absolutely amazing!"</p>
+          <div class="d-flex align-items-center gap-3">
+            <div class="testimonial-avatar">EC</div>
+            <div>
+              <div class="testimonial-name">Emily Chen</div>
+              <div class="testimonial-role">Everyday User</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta-section text-center">
+  <div class="container" data-aos="fade-up">
+    <h2 class="mb-3">Start creating beautiful albums today</h2>
+    <p class="mb-5">Join thousands of photographers and clients already using Pizxify.</p>
+    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+      <a href="{% url 'register' %}" class="btn px-5 py-3 fw-semibold rounded-pill" style="background:var(--coral);color:#fff;">
+        <i class="bi bi-person-plus me-2"></i>Register Now
+      </a>
+      <a href="{% url 'login' %}" class="btn btn-outline-light-custom px-5 py-3">
+        <i class="bi bi-box-arrow-in-right me-2"></i>Login
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+<!-- ===== FOOTER ===== -->
+<footer class="footer-main">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-md-6 col-lg-5">
+        <div class="footer-brand"><i class="bi bi-camera2"></i> PIZXIFY</div>
+        <p class="footer-desc">A smart digital album platform for clients, freelance users, and professional photographers. Create, organize &amp; share your memories effortlessly.</p>
+        <div class="d-flex gap-2 mt-3">
+          <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="social-link"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="social-link"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 col-lg-2 offset-lg-1">
+        <p class="footer-heading">Quick Links</p>
+        <a href="{% url 'client_dashboard' %}"     class="footer-link">Home</a>
+        <a href="{% url 'about' %}"     class="footer-link">About</a>
+        <a href="{% url 'register' %}"  class="footer-link">Register</a>
+        <a href="{% url 'login' %}"     class="footer-link">Login</a>
+      </div>
+      <div class="col-6 col-md-3 col-lg-2">
+        <p class="footer-heading">Legal</p>
+        <a href="#" class="footer-link">Privacy Policy</a>
+        <a href="#" class="footer-link">Terms of Service</a>
+        <a href="#" class="footer-link">Contact Us</a>
+      </div>
+    </div>
+    <div class="footer-bottom d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
+      <p>&copy; 2025 PIZXIFY. All rights reserved.</p>
+      <p>Made for photographers, by creators.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== SCRIPTS - Load at the end of body ===== -->
+<!-- Bootstrap 5 JS Bundle (includes Popper) - Load once -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- AOS JS -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<!-- Custom JS - Load after Bootstrap -->
+<script src="/static/assets/js/script.js"></script>
+
+<script>
+  // Initialize AOS
+  AOS.init({
+    duration: 800,
+    once: true,
+    offset: 50
+  });
+</script>
+</body>
+</html>

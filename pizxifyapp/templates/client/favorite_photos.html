@@ -1,0 +1,46 @@
+{% extends 'client/client_dashboard.html' %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <h3 class="mb-4">
+        Favorite Photos
+    </h3>
+
+    <div class="row">
+
+        {% for like in likes %}
+
+        <div class="col-md-3 mb-4">
+
+            <div class="card shadow-sm">
+
+                <img src="{{ like.photo.image.url }}"
+                     class="card-img-top"
+                     style="height:250px;
+                            object-fit:cover;">
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+
+            <div class="alert alert-info">
+
+                No favorite photos found.
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

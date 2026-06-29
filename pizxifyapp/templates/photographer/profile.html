@@ -1,0 +1,352 @@
+{% extends 'photographer/photographer_dashboard.html' %}
+
+{% block content %}
+
+<div class="profile-wrapper">
+    <div class="container-fluid px-4 py-5">
+
+        <!-- ===== HEADER ===== -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="profile-header d-flex flex-wrap align-items-center justify-content-between bg-folder-cover p-4 p-lg-5 rounded-4 shadow-lg">
+                    <div>
+                        <span class="folder-eyebrow"><i class="bi bi-person me-1"></i> Account</span>
+                        <h1 class="folder-heading mb-2">Photographer Profile</h1>
+                        <p class="folder-sub mb-0">
+                            Manage your personal information and profile picture.
+                        </p>
+                    </div>
+                    <div class="mt-3 mt-sm-0">
+                        <a href="{% url 'photographer_dashboard' %}" class="btn btn-folder-cta-outline px-4">
+                            <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PROFILE CARD ===== -->
+        <div class="row justify-content-center">
+            <div class="col-lg-9 col-xl-8">
+                <div class="profile-card">
+                    <div class="card-body p-4 p-lg-5">
+
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <!-- ===== AVATAR ===== -->
+                            <div class="text-center mb-4">
+                                <div class="avatar-wrapper">
+                                    {% if user.profile_pic %}
+                                        <img src="{{ user.profile_pic.url }}"
+                                             class="avatar-image"
+                                             alt="Profile picture">
+                                    {% else %}
+                                        <img src="/static/assets/images/default-user.png"
+                                             class="avatar-image"
+                                             alt="Default profile">
+                                    {% endif %}
+                                    <div class="avatar-ring"></div>
+                                </div>
+                                <p class="avatar-hint mt-2">Click below to change your profile picture</p>
+                            </div>
+
+                            <!-- ===== FORM FIELDS ===== -->
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="profile-field-label"><i class="bi bi-person me-1"></i>Full Name</label>
+                                    <input type="text"
+                                           name="full_name"
+                                           class="form-control profile-input"
+                                           value="{{ user.full_name }}"
+                                           placeholder="Your full name">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="profile-field-label"><i class="bi bi-envelope me-1"></i>Email</label>
+                                    <input type="email"
+                                           class="form-control profile-input"
+                                           value="{{ user.email }}"
+                                           readonly
+                                           style="background: var(--paper-deep); cursor: not-allowed;">
+                                    <small class="text-muted" style="font-size:.7rem;">Email cannot be changed</small>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="profile-field-label"><i class="bi bi-phone me-1"></i>Phone</label>
+                                    <input type="text"
+                                           name="phone"
+                                           class="form-control profile-input"
+                                           value="{{ user.phone }}"
+                                           placeholder="Your phone number">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="profile-field-label"><i class="bi bi-geo-alt me-1"></i>Place / City</label>
+                                    <input type="text"
+                                           name="place"
+                                           class="form-control profile-input"
+                                           value="{{ user.place }}"
+                                           placeholder="Your city or region">
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="profile-field-label"><i class="bi bi-house me-1"></i>Address</label>
+                                    <textarea name="address"
+                                              class="form-control profile-input"
+                                              rows="3"
+                                              placeholder="Your full address">{{ user.address }}</textarea>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="profile-field-label"><i class="bi bi-image me-1"></i>Profile Picture</label>
+                                    <input type="file"
+                                           name="profile_pic"
+                                           class="form-control profile-input file-input"
+                                           accept="image/*">
+                                    <small class="text-muted" style="font-size:.7rem;">Upload a square image for best results.</small>
+                                </div>
+                            </div>
+
+                            <!-- ===== SUBMIT ===== -->
+                            <div class="d-flex flex-wrap gap-3 mt-4 pt-3 border-top" style="border-color: var(--line) !important;">
+                                <button type="submit" class="btn btn-folder-cta px-5 py-2">
+                                    <i class="bi bi-check-circle me-2"></i>Update Profile
+                                </button>
+                                <a href="{% url 'photographer_dashboard' %}" class="btn btn-folder-cta-outline-secondary px-5 py-2">
+                                    Cancel
+                                </a>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== FOOTER NOTE ===== -->
+        <div class="row mt-5">
+            <div class="col-12 text-center folder-meta">
+                <i class="bi bi-person me-1"></i> Keep your profile up to date for clients and collaborators.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ===== STYLES ===== -->
+<style>
+    .profile-wrapper {
+        background: var(--paper, #F1ECE0);
+        min-height: 80vh;
+        background-image: radial-gradient(circle at 1px 1px, rgba(34,34,31,.05) 1px, transparent 0);
+        background-size: 18px 18px;
+    }
+
+    /* header */
+    .bg-folder-cover {
+        background: var(--ink, #22221F);
+        border-radius: 14px;
+    }
+
+    .folder-eyebrow {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: .72rem;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: var(--gold, #C18B2E);
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: .6rem;
+    }
+
+    .folder-heading {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        font-size: clamp(1.9rem, 3vw, 2.5rem);
+        color: var(--paper, #F1ECE0);
+        margin: 0;
+    }
+
+    .folder-sub {
+        color: #C8C2B2;
+        font-size: 1.05rem;
+        max-width: 480px;
+    }
+
+    .btn-folder-cta {
+        background: var(--coral, #D9512F);
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: .7rem 1.8rem;
+        border: none;
+        transition: background .2s;
+    }
+    .btn-folder-cta:hover { background: #bf4324; color: #fff; }
+
+    .btn-folder-cta-outline {
+        background: transparent;
+        color: var(--paper, #F1ECE0);
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: .7rem 1.8rem;
+        border: 1.5px solid var(--paper, #F1ECE0);
+        transition: all .2s;
+    }
+    .btn-folder-cta-outline:hover {
+        background: var(--paper, #F1ECE0);
+        color: var(--ink, #22221F);
+    }
+
+    .btn-folder-cta-outline-secondary {
+        background: transparent;
+        color: var(--ink-soft, #6B655A);
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: .7rem 1.8rem;
+        border: 1.5px solid var(--line, #D6CCB4);
+        transition: all .2s;
+    }
+    .btn-folder-cta-outline-secondary:hover {
+        background: var(--paper-deep, #E7DFCC);
+        color: var(--ink, #22221F);
+    }
+
+    .folder-meta {
+        color: var(--ink-soft, #6B655A);
+        font-size: .85rem;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* profile card */
+    .profile-card {
+        background: #ffffff;
+        border: 1px solid var(--line, #D6CCB4);
+        border-radius: 0 16px 16px 16px;
+        box-shadow: 0 18px 38px -18px rgba(34,34,31,.35);
+    }
+
+    /* avatar */
+    .avatar-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    .avatar-image {
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--paper, #F1ECE0);
+        box-shadow: 0 4px 16px rgba(34,34,31,.12);
+        transition: transform .2s;
+        background: var(--paper-deep, #E7DFCC);
+    }
+    .avatar-image:hover {
+        transform: scale(1.02);
+    }
+
+    .avatar-ring {
+        position: absolute;
+        top: -4px;
+        left: -4px;
+        width: 138px;
+        height: 138px;
+        border-radius: 50%;
+        border: 3px solid var(--gold, #C18B2E);
+        opacity: 0.3;
+        pointer-events: none;
+    }
+
+    .avatar-hint {
+        font-family: 'Inter', sans-serif;
+        font-size: .78rem;
+        color: var(--ink-soft, #6B655A);
+    }
+
+    /* form fields */
+    .profile-field-label {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: .72rem;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        color: var(--ink-soft, #6B655A);
+        display: block;
+        margin-bottom: .4rem;
+    }
+
+    .profile-input {
+        font-family: 'Inter', sans-serif;
+        font-size: 1rem;
+        border: 1px solid var(--line, #D6CCB4);
+        border-radius: 8px;
+        background: var(--paper, #F1ECE0);
+        padding: .65rem .9rem;
+        color: var(--ink, #22221F);
+        transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+    .profile-input:focus {
+        border-color: var(--moss, #56725A);
+        box-shadow: 0 0 0 3px rgba(86, 114, 90, .15);
+        background: #fff;
+    }
+    .profile-input::placeholder {
+        color: #a8a09a;
+    }
+
+    .profile-input:read-only {
+        background: var(--paper-deep, #E7DFCC);
+        cursor: not-allowed;
+    }
+
+    .file-input {
+        padding: .5rem .7rem;
+        cursor: pointer;
+    }
+    .file-input::file-selector-button {
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        border: 1px solid var(--line, #D6CCB4);
+        border-radius: 6px;
+        padding: .3rem .9rem;
+        background: var(--paper, #F1ECE0);
+        color: var(--ink, #22221F);
+        cursor: pointer;
+        transition: background .2s;
+        margin-right: 0.8rem;
+    }
+    .file-input::file-selector-button:hover {
+        background: var(--paper-deep, #E7DFCC);
+    }
+
+    /* responsive */
+    @media (max-width: 576px) {
+        .profile-header {
+            text-align: center;
+        }
+        .btn-folder-cta,
+        .btn-folder-cta-outline,
+        .btn-folder-cta-outline-secondary {
+            width: 100%;
+            text-align: center;
+        }
+        .profile-card .card-body {
+            padding: 1.5rem !important;
+        }
+        .avatar-image {
+            width: 100px;
+            height: 100px;
+        }
+        .avatar-ring {
+            width: 108px;
+            height: 108px;
+        }
+    }
+</style>
+
+{% endblock %}
